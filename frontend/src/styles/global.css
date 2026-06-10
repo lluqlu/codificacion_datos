@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --sidebar-width: 220px;
+  --sidebar-width: 236px;
   --topbar-height: 56px;
-  --statusbar-height: 36px;
+  --statusbar-height: 32px;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
 }
 
 * {
@@ -12,10 +14,16 @@
   padding: 0;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 body {
   font-family: "Inter", system-ui, sans-serif;
   background-color: #f1f5f9;
-  color: #1e293b;
+  color: #0f172a;
   height: 100vh;
   overflow: hidden;
 }
@@ -24,4 +32,40 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Dot grid pattern for main content area */
+.dot-grid {
+  background-color: #f1f5f9;
+  background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Card depth */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.15s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
