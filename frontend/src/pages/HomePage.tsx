@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { SymbolCode } from "../types/compression";
 import { useCompression } from "../app/CompressionContext";
+import { generatePDF } from "../services/pdfExport";
 import Topbar from "../components/layout/Topbar";
 import StatusBar from "../components/layout/StatusBar";
 import Panel from "../components/cards/Panel";
@@ -92,6 +93,19 @@ export default function HomePage() {
   const { text, setText, result, setResult, addEncodeEntry } = useCompression();
   const [status, setStatus] = useState<Status>(result ? "success" : "idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const treeRef = useRef<HTMLDivElement>(null);
+
+  async function handleDownloadPDF() {
+    if (!result) return;
+    setPdfLoading(true);
+    try {
+      await generatePDF(result, chartRef, treeRef);
+    } finally {
+      setPdfLoading(false);
+    }
+  }
 
   async function handleEncode() {
     setStatus("loading");
@@ -138,12 +152,21 @@ export default function HomePage() {
         subtitle="Huffman / Shannon-Fano"
         actions={
           result && (
-            <button
-              className="px-3 py-1.5 text-xs border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50 transition-colors"
-              onClick={() => exportCSV(result)}
-            >
-              Exportar CSV
-            </button>
+            <>
+              <button
+                className="px-3 py-1.5 text-xs border border-slate-300 rounded-md text-slate-600 hover:bg-slate-50 transition-colors"
+                onClick={() => exportCSV(result)}
+              >
+                Exportar CSV
+              </button>
+              <button
+                className="px-3 py-1.5 text-xs bg-slate-800 text-white rounded-md hover:bg-slate-700 disabled:opacity-50 transition-colors"
+                onClick={handleDownloadPDF}
+                disabled={pdfLoading}
+              >
+                {pdfLoading ? "Generando PDF..." : "Descargar PDF"}
+              </button>
+            </>
           )
         }
       />
@@ -170,13 +193,17 @@ export default function HomePage() {
                 />
               </Panel>
 
-              <Panel title="Arbol de Huffman">
-                <HuffmanTreeView tree={result.huffman.tree} />
-              </Panel>
+              <div ref={treeRef}>
+                <Panel title="Arbol de Huffman">
+                  <HuffmanTreeView tree={result.huffman.tree} />
+                </Panel>
+              </div>
 
-              <Panel title="Grafico de frecuencias">
-                <FrequencyChart frequencies={result.frequencies} />
-              </Panel>
+              <div ref={chartRef}>
+                <Panel title="Grafico de frecuencias">
+                  <FrequencyChart frequencies={result.frequencies} />
+                </Panel>
+              </div>
             </div>
 
             <div className="grid gap-4" style={{ gridTemplateColumns: "1fr 1fr" }}>
