@@ -228,7 +228,7 @@ export default function HomePage() {
         }
       />
 
-      <div className="flex-1 overflow-auto" style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="flex-1 overflow-auto page-content">
 
         {/* Hero input */}
         <div
@@ -292,7 +292,7 @@ export default function HomePage() {
         {result && (
           <>
             {/* KPI strip — 6 cards */}
-            <div className="grid grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               <KpiCard
                 label="Caracteres"
                 value={result.original.characters.toString()}
@@ -334,7 +334,7 @@ export default function HomePage() {
             </div>
 
             {/* Main grid: tabla | arbol (protagonista) | grafico */}
-            <div className="grid gap-4" style={{ gridTemplateColumns: "1fr 2.4fr 1.1fr", height: 420 }}>
+            <div className="main-grid gap-4">
               <Panel title="Simbolos y codigos">
                 <SymbolCodeTable
                   frequencies={result.frequencies}
@@ -343,7 +343,7 @@ export default function HomePage() {
                 />
               </Panel>
 
-              <div ref={treeRef} className="flex flex-col" style={{ minHeight: 0 }}>
+              <div ref={treeRef} className="flex flex-col tree-panel">
                 <Panel title="Arbol de Huffman" className="flex-1">
                   <HuffmanTreeView tree={result.huffman.tree} />
                 </Panel>
@@ -357,7 +357,7 @@ export default function HomePage() {
             </div>
 
             {/* Bottom: comparacion + codigos */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Panel title="Comparacion de metricas">
                 <ComparisonTable data={result} />
               </Panel>

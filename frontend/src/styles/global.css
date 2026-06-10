@@ -47,3 +47,62 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* Sidebar: drawer on mobile, static on desktop */
+.sidebar-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 50;
+  transform: translateX(-100%);
+  transition: transform 0.2s ease-in-out;
+}
+
+.sidebar-drawer.is-open {
+  transform: translateX(0);
+}
+
+@media (min-width: 768px) {
+  .sidebar-drawer {
+    position: relative;
+    transform: translateX(0) !important;
+    z-index: auto;
+  }
+}
+
+/* Page content wrapper */
+.page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+@media (min-width: 768px) {
+  .page-content {
+    gap: 16px;
+    padding: 20px 24px;
+  }
+}
+
+/* Main 3-column grid — stacks on mobile */
+.main-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-grid > * { min-height: 260px; }
+
+.tree-panel { min-height: 300px; }
+
+@media (min-width: 768px) {
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 2.4fr 1.1fr;
+    height: 420px;
+  }
+
+  .main-grid > * { min-height: 0; }
+  .tree-panel    { min-height: 0; }
+}

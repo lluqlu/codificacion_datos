@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Code2, Unlock, GitCompare, ImageIcon, Clock, Info } from "lucide-react";
+import { Home, Code2, Unlock, GitCompare, ImageIcon, Clock, Info, X } from "lucide-react";
+import { useSidebar } from "../../app/SidebarContext";
 
 const navItems = [
   { to: "/",            label: "Inicio",      Icon: Home,       exact: true  },
@@ -12,17 +13,23 @@ const navItems = [
 ];
 
 export default function Sidebar() {
-  const navigate  = useNavigate();
-  const location  = useLocation();
+  const navigate          = useNavigate();
+  const location          = useLocation();
+  const { isOpen, close } = useSidebar();
 
   function isActive(to: string, exact: boolean) {
     if (exact) return location.pathname === to;
     return location.pathname.startsWith(to);
   }
 
+  function handleNav(to: string) {
+    navigate(to);
+    close();
+  }
+
   return (
     <aside
-      className="flex flex-col h-full flex-shrink-0"
+      className={`sidebar-drawer flex flex-col flex-shrink-0${isOpen ? " is-open" : ""}`}
       style={{
         width: "var(--sidebar-width)",
         background: "#111111",
@@ -30,19 +37,29 @@ export default function Sidebar() {
       }}
     >
       <div
-        className="flex items-center gap-2.5 px-5 py-[18px]"
+        className="flex items-center justify-between px-5 py-[18px]"
         style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
-        <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-          style={{ background: "#2563eb" }}
+        <div className="flex items-center gap-2.5">
+          <div
+            className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+            style={{ background: "#2563eb" }}
+          >
+            <Code2 size={13} color="#fff" strokeWidth={2.5} />
+          </div>
+          <div className="flex flex-col leading-none">
+            <span className="text-[13px] font-semibold text-white">Codificacion</span>
+            <span className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>de Datos</span>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={close}
+          className="md:hidden flex items-center justify-center w-7 h-7 rounded-md"
+          style={{ color: "rgba(255,255,255,0.4)", background: "transparent", border: "none", cursor: "pointer" }}
         >
-          <Code2 size={13} color="#fff" strokeWidth={2.5} />
-        </div>
-        <div className="flex flex-col leading-none">
-          <span className="text-[13px] font-semibold text-white">Codificacion</span>
-          <span className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>de Datos</span>
-        </div>
+          <X size={16} />
+        </button>
       </div>
 
       <nav className="flex-1 flex flex-col gap-0.5 p-3 mt-1">
@@ -52,7 +69,7 @@ export default function Sidebar() {
             <button
               key={to}
               type="button"
-              onClick={() => navigate(to)}
+              onClick={() => handleNav(to)}
               className="flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] w-full text-left transition-colors"
               style={{
                 color:      active ? "#ffffff" : "rgba(255,255,255,0.45)",
