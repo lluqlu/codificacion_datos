@@ -6,34 +6,27 @@ interface PanelProps {
   accent?: "blue" | "violet" | "emerald" | "slate";
 }
 
-const accentGradient: Record<string, string> = {
-  blue:    "linear-gradient(90deg, #3b82f6, #6366f1)",
-  violet:  "linear-gradient(90deg, #8b5cf6, #a855f7)",
-  emerald: "linear-gradient(90deg, #10b981, #14b8a6)",
-  slate:   "linear-gradient(90deg, #94a3b8, #cbd5e1)",
-};
-
-export default function Panel({ title, children, className = "", actions, accent }: PanelProps) {
+export default function Panel({ title, children, className = "", actions }: PanelProps) {
   return (
     <div
       className={`flex flex-col overflow-hidden ${className}`}
       style={{
         background: "#ffffff",
-        borderRadius: "16px",
-        border: "1px solid rgba(226,232,240,0.8)",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.05)",
+        borderRadius: 14,
+        border: "1px solid rgba(0,0,0,0.07)",
+        boxShadow: "0 0 0 1px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)",
       }}
     >
-      {accent && (
-        <div style={{ height: 2, background: accentGradient[accent], flexShrink: 0 }} />
-      )}
       {(title || actions) && (
         <div
-          className="flex items-center justify-between px-4 py-3 flex-shrink-0"
-          style={{ borderBottom: "1px solid rgba(241,245,249,1)", background: "rgba(248,250,252,0.6)" }}
+          className="flex items-center justify-between px-4 py-2.5 flex-shrink-0"
+          style={{ borderBottom: "1px solid #f3f4f6" }}
         >
           {title && (
-            <h2 className="text-xs font-semibold tracking-wide uppercase" style={{ color: "#94a3b8", letterSpacing: "0.06em" }}>
+            <h2
+              className="text-[11px] font-semibold uppercase tracking-widest"
+              style={{ color: "#9ca3af", letterSpacing: "0.08em" }}
+            >
               {title}
             </h2>
           )}

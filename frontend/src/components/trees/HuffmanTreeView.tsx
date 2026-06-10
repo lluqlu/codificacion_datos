@@ -18,8 +18,9 @@ interface LayoutEdge {
   y2: number;
 }
 
-const NODE_RADIUS = 20;
-const LEVEL_HEIGHT = 60;
+const R = 22;
+const LEVEL_H = 84;
+const MIN_LEAF_GAP = 56;
 
 function buildLayout(
   node: TreeNode | null,
@@ -35,7 +36,7 @@ function buildLayout(
   if (!node) return;
 
   const x = (left + right) / 2;
-  const y = depth * LEVEL_HEIGHT + NODE_RADIUS + 8;
+  const y = depth * LEVEL_H + R + 12;
 
   nodes.push({ node, x, y, id });
 
@@ -45,13 +46,19 @@ function buildLayout(
   }
 
   const mid = (left + right) / 2;
-  buildLayout(node.left, depth + 1, left, mid, id + "L", nodes, edges, id, "0");
+  buildLayout(node.left,  depth + 1, left, mid, id + "L", nodes, edges, id, "0");
   buildLayout(node.right, depth + 1, mid, right, id + "R", nodes, edges, id, "1");
 }
 
 function treeDepth(node: TreeNode | null): number {
   if (!node) return 0;
   return 1 + Math.max(treeDepth(node.left), treeDepth(node.right));
+}
+
+function countLeaves(node: TreeNode | null): number {
+  if (!node) return 0;
+  if (!node.left && !node.right) return 1;
+  return countLeaves(node.left) + countLeaves(node.right);
 }
 
 interface HuffmanTreeViewProps {
@@ -65,9 +72,9 @@ export default function HuffmanTreeView({ tree }: HuffmanTreeViewProps) {
 
   const { nodes, edges, svgWidth, svgHeight } = useMemo(() => {
     const depth = treeDepth(tree);
-    const leafCount = Math.pow(2, depth - 1);
-    const width = Math.max(leafCount * 50, 400);
-    const height = depth * LEVEL_HEIGHT + NODE_RADIUS * 2 + 24;
+    const leaves = countLeaves(tree);
+    const width = Math.max(leaves * MIN_LEAF_GAP, 380);
+    const height = depth * LEVEL_H + R * 2 + 32;
 
     const layoutNodes: LayoutNode[] = [];
     const layoutEdges: LayoutEdge[] = [];
@@ -93,7 +100,11 @@ export default function HuffmanTreeView({ tree }: HuffmanTreeViewProps) {
   }
 
   return (
-    <div className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing" onMouseUp={onMouseUp} onMouseLeave={onMouseUp}>
+    <div
+      className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing select-none"
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseUp}
+    >
       <svg
         ref={containerRef}
         width="100%"
@@ -101,53 +112,81 @@ export default function HuffmanTreeView({ tree }: HuffmanTreeViewProps) {
         viewBox={`${-pan.x} ${-pan.y} ${svgWidth} ${svgHeight}`}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
+        style={{ fontFamily: "Inter, system-ui, sans-serif" }}
       >
+        <defs>
+          <filter id="leaf-glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#2563eb" floodOpacity="0.22" />
+          </filter>
+          <filter id="node-shadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#000000" floodOpacity="0.09" />
+          </filter>
+        </defs>
+
+        {/* Edges */}
         {edges.map((edge) => {
-          const midX = (edge.x1 + edge.x2) / 2;
           const midY = (edge.y1 + edge.y2) / 2;
+          const d = `M ${edge.x1} ${edge.y1} C ${edge.x1} ${midY}, ${edge.x2} ${midY}, ${edge.x2} ${edge.y2}`;
+          const lx = (edge.x1 * 0.35 + edge.x2 * 0.65);
+          const ly = (edge.y1 * 0.35 + edge.y2 * 0.65);
+          const isZero = edge.label === "0";
           return (
             <g key={`${edge.from}-${edge.to}`}>
-              <line
-                x1={edge.x1}
-                y1={edge.y1}
-                x2={edge.x2}
-                y2={edge.y2}
-                stroke="#cbd5e1"
-                strokeWidth={1.5}
+              <path d={d} fill="none" stroke="#d1d5db" strokeWidth={1.5} />
+              <rect
+                x={lx - 8}
+                y={ly - 8}
+                width={16}
+                height={14}
+                rx={4}
+                fill="#ffffff"
+                stroke={isZero ? "#93c5fd" : "#c4b5fd"}
+                strokeWidth={1}
               />
               <text
-                x={midX}
-                y={midY - 4}
+                x={lx}
+                y={ly + 2.5}
                 textAnchor="middle"
-                fontSize={10}
-                fill="#64748b"
-                fontFamily="monospace"
+                fontSize={9}
+                fontWeight={600}
+                fill={isZero ? "#2563eb" : "#7c3aed"}
               >
                 {edge.label}
               </text>
             </g>
           );
         })}
-        {nodes.map(({ node, x, y, id }) => (
-          <g key={id}>
-            <circle
-              cx={x}
-              cy={y}
-              r={NODE_RADIUS}
-              fill={node.symbol !== null ? "#dbeafe" : "#f1f5f9"}
-              stroke={node.symbol !== null ? "#3b82f6" : "#94a3b8"}
-              strokeWidth={1.5}
-            />
-            <text x={x} y={y - 4} textAnchor="middle" fontSize={9} fill="#475569" fontFamily="monospace">
-              {node.frequency}
-            </text>
-            {node.symbol !== null && (
-              <text x={x} y={y + 8} textAnchor="middle" fontSize={11} fill="#1d4ed8" fontWeight={600} fontFamily="monospace">
-                {node.symbol === " " ? "·" : node.symbol}
-              </text>
-            )}
-          </g>
-        ))}
+
+        {/* Nodes */}
+        {nodes.map(({ node, x, y, id }) => {
+          const isLeaf = node.symbol !== null;
+          return (
+            <g key={id} filter={isLeaf ? "url(#leaf-glow)" : "url(#node-shadow)"}>
+              <circle
+                cx={x}
+                cy={y}
+                r={R}
+                fill={isLeaf ? "#2563eb" : "#ffffff"}
+                stroke={isLeaf ? "#1d4ed8" : "#e2e8f0"}
+                strokeWidth={isLeaf ? 0 : 1.5}
+              />
+              {isLeaf ? (
+                <>
+                  <text x={x} y={y - 3.5} textAnchor="middle" fontSize={13} fontWeight={700} fill="#ffffff">
+                    {node.symbol === " " ? "·" : node.symbol}
+                  </text>
+                  <text x={x} y={y + 10} textAnchor="middle" fontSize={8.5} fill="rgba(255,255,255,0.65)">
+                    {node.frequency}
+                  </text>
+                </>
+              ) : (
+                <text x={x} y={y + 4} textAnchor="middle" fontSize={10} fill="#64748b" fontWeight={500}>
+                  {node.frequency}
+                </text>
+              )}
+            </g>
+          );
+        })}
       </svg>
     </div>
   );
