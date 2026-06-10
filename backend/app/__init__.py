@@ -9,7 +9,7 @@ def create_app(env: str = "default") -> Flask:
     app = Flask(__name__)
     app.config.from_object(config_map[env])
 
-    CORS(app)
+    CORS(app, origins=["https://codificacion.lluqlu.com"])
 
     app.register_blueprint(health_bp, url_prefix="/api/health")
     app.register_blueprint(compression_bp, url_prefix="/api/compression")

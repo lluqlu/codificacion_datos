@@ -26,3 +26,7 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+auto_deploy.sh
+codificacion-autodeploy.service
+autodeploy.log
+deploy_back_local.md

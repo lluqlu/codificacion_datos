@@ -3,7 +3,7 @@
 Aplicacion web interactiva para comprimir y descomprimir texto usando los algoritmos **Huffman** y **Shannon-Fano**. Permite ingresar texto libre o cargar archivos `.txt`, visualizar el arbol de Huffman, comparar metricas reales entre ambos algoritmos y exportar los resultados.
 
 **Demo:** [codificacion.lluqlu.com](https://codificacion.lluqlu.com)
-**API:** [api.codificacion.lluqlu.com](https://api.codificacion.lluqlu.com)
+**API:** [api-codificacion.lluqlu.com](https://api-codificacion.lluqlu.com)
 
 ---
 
