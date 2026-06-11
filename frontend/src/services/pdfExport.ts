@@ -49,6 +49,19 @@ function getSvg(container: HTMLElement | null): SVGSVGElement | null {
   return container?.querySelector("svg") ?? null;
 }
 
+function getTreeSvg(container: HTMLElement | null): { el: SVGSVGElement; w: number; h: number } | null {
+  const exportEl = container?.querySelector("[data-tree-export]") as SVGSVGElement | null;
+  if (exportEl) {
+    const w = Number(exportEl.getAttribute("data-tree-width")) || 500;
+    const h = Number(exportEl.getAttribute("data-tree-height")) || 300;
+    return { el: exportEl, w, h };
+  }
+  const el = container?.querySelector("svg") as SVGSVGElement | null;
+  if (!el) return null;
+  const rect = el.getBoundingClientRect();
+  return { el, w: rect.width || 320, h: rect.height || 220 };
+}
+
 function sectionTitle(doc: jsPDF, text: string, y: number, margin: number): void {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
@@ -212,9 +225,8 @@ export async function generatePDF(
 
   // ── Charts & tree images ─────────────────────────────────────────────────
   const chartSvg = getSvg(chartRef.current);
-  const treeSvg  = getSvg(treeRef.current);
 
-  if (chartSvg || treeSvg) {
+  if (chartSvg || treeRef.current) {
     y = pageBreakIfNeeded(doc, y, 70);
     sectionTitle(doc, "Visualizaciones", y, margin);
     y += 6;
@@ -236,10 +248,11 @@ export async function generatePDF(
       } catch { /* skip if capture fails */ }
     }
 
-    if (treeSvg) {
+    const treeData = getTreeSvg(treeRef.current);
+    if (treeData) {
+      const treeSvg = treeData.el;
       try {
-        const rect = treeSvg.getBoundingClientRect();
-        const png  = await svgToPng(treeSvg, rect.width || 320, rect.height || 220);
+        const png  = await svgToPng(treeSvg, treeData.w, treeData.h);
         const treeX = margin + halfW + 5;
         doc.setFillColor(...C.light);
         doc.roundedRect(treeX, y, halfW, imgH + 8, 2, 2, "F");
