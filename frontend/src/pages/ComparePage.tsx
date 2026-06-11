@@ -67,7 +67,7 @@ export default function ComparePage() {
         {/* Input */}
         <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4">
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Texto a comparar</p>
-          <div className="flex gap-3 items-start">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
             <textarea
               className="flex-1 resize-none rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
               rows={3}
@@ -75,17 +75,17 @@ export default function ComparePage() {
               value={text}
               onChange={(e) => setText(e.target.value)}
             />
-            <div className="flex flex-col gap-2 flex-shrink-0">
+            <div className="flex flex-row gap-2 sm:flex-col sm:flex-shrink-0">
               <input ref={fileRef} type="file" accept=".txt" className="hidden" onChange={handleFile} />
               <button
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-all"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-all"
                 onClick={() => fileRef.current?.click()}
               >
                 <Upload size={12} />
                 Cargar .txt
               </button>
               <button
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 transition-all shadow-sm shadow-blue-200"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 transition-all shadow-sm shadow-blue-200"
                 onClick={handleCompare}
                 disabled={status === "loading" || !text.trim()}
               >
@@ -103,7 +103,7 @@ export default function ComparePage() {
         {result && (
           <>
             {/* KPI strip */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
                 { label: "Tamano original",         value: `${result.original.bits} bits`,               sub: `${result.original.characters} caracteres`,          accent: "slate" },
                 { label: "Huffman comprimido",       value: `${result.huffman.compressedBits} bits`,       sub: `-${result.huffman.compressionRate}% reduccion`,      accent: "blue"   },
@@ -122,7 +122,7 @@ export default function ComparePage() {
             </div>
 
             {/* Detail row */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <Panel title="Metricas detalladas" accent="slate">
                 <table className="w-full text-xs border-separate border-spacing-0">
                   <thead>
