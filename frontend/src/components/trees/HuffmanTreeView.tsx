@@ -64,10 +64,10 @@ function countLeaves(node: TreeNode | null): number {
 interface TreeContentProps {
   nodes: LayoutNode[];
   edges: LayoutEdge[];
-  filterPrefix?: string;
+  withFilters?: boolean;
 }
 
-function TreeContent({ nodes, edges, filterPrefix = "" }: TreeContentProps) {
+function TreeContent({ nodes, edges, withFilters = false }: TreeContentProps) {
   return (
     <>
       {edges.map((edge) => {
@@ -89,7 +89,7 @@ function TreeContent({ nodes, edges, filterPrefix = "" }: TreeContentProps) {
 
       {nodes.map(({ node, x, y, id }) => {
         const isLeaf = node.symbol !== null;
-        const filterId = filterPrefix ? `url(#${filterPrefix}${isLeaf ? "leaf-glow" : "node-shadow"})` : undefined;
+        const filterId = withFilters ? `url(#${isLeaf ? "leaf-glow" : "node-shadow"})` : undefined;
         return (
           <g key={id} filter={filterId}>
             <circle cx={x} cy={y} r={R} fill={isLeaf ? "#2563eb" : "#ffffff"} stroke={isLeaf ? "#1d4ed8" : "#e2e8f0"} strokeWidth={isLeaf ? 0 : 1.5} />
@@ -235,7 +235,7 @@ export default function HuffmanTreeView({ tree }: HuffmanTreeViewProps) {
         </defs>
 
         <g transform={`translate(${transform.x}, ${transform.y}) scale(${transform.scale})`}>
-          <TreeContent nodes={nodes} edges={edges} filterPrefix="" />
+          <TreeContent nodes={nodes} edges={edges} withFilters />
         </g>
       </svg>
 

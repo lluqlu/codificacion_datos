@@ -4,7 +4,6 @@ import { useSidebar } from "../../app/SidebarContext";
 
 const navItems = [
   { to: "/",            label: "Inicio",      Icon: Home,       exact: true  },
-  { to: "/codificar",   label: "Codificar",   Icon: Code2,      exact: false },
   { to: "/decodificar", label: "Decodificar", Icon: Unlock,     exact: false },
   { to: "/comparar",    label: "Comparar",    Icon: GitCompare, exact: false },
   { to: "/imagenes",    label: "Imagenes",    Icon: ImageIcon,  exact: false },
