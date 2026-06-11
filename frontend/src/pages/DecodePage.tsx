@@ -91,7 +91,7 @@ export default function DecodePage() {
           </div>
         )}
 
-        <div className="grid gap-4 grid-cols-2" style={{ flex: 1 }}>
+        <div className="grid gap-4 grid-cols-1 lg:grid-cols-2" style={{ flex: 1 }}>
           <div className="flex flex-col gap-4">
             <Panel title="Codigo binario" className="flex-1">
               <textarea
