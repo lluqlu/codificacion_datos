@@ -22,6 +22,7 @@ Aplicacion web interactiva para comprimir y descomprimir texto usando los algori
   - [Vista Imagenes / Mapas de bits](#vista-imagenes--mapas-de-bits)
   - [Vista Acerca de](#vista-acerca-de)
 - [Exportacion de resultados](#exportacion-de-resultados)
+- [Uso desde el celular](#uso-desde-el-celular)
 - [Validaciones](#validaciones)
 - [Tests](#tests)
 
@@ -394,6 +395,25 @@ El documento incluye:
 - Imagen del arbol de Huffman.
 - Grafico de frecuencias.
 - Tabla de comparacion de metricas.
+
+---
+
+## Uso desde el celular
+
+La aplicacion esta configurada como PWA (Progressive Web App), lo que permite instalarla en el celular y usarla como si fuera una app nativa, sin barra del navegador.
+
+### iOS (Safari)
+
+1. Abrir [codificacion.lluqlu.com](https://codificacion.lluqlu.com) en Safari.
+2. Tocar el boton de compartir (cuadrado con flecha hacia arriba, en la barra inferior).
+3. Seleccionar **Agregar a pantalla de inicio**.
+4. Confirmar el nombre y tocar **Agregar**.
+
+El icono aparece en el launcher. Al abrirlo, la app carga en modo standalone sin interfaz de Safari.
+
+### Android (Chrome)
+
+Chrome detecta el `manifest.json` automaticamente y muestra un banner o una opcion en el menu para **Agregar a pantalla de inicio** / **Instalar app**.
 
 ---
 
